@@ -12,12 +12,48 @@ datasource db {
   provider = "postgresql"
 }
 
+// Define your enums here.
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
 // Define your database models, relations, and constraints here.
 model User {
-  id           Int      @id @default(autoincrement())
-  email        String   @unique
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
   name         String
   passwordHash String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  categories   Category[]
+  transactions Transaction[]
+}
+
+model Category {
+  id           Int           @id @default(autoincrement())
+  name         String
+  color        String        @default("#6366f1")
+  userId       Int
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+
+  @@unique([userId, name])
+}
+
+model Transaction {
+  id         Int             @id @default(autoincrement())
+  amount     Int
+  type       TransactionType
+  note       String?
+  date       DateTime
+  userId     Int
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId Int?
+  category   Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@index([userId, date])
 }

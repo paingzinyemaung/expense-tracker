@@ -6,6 +6,7 @@ import { prisma } from './lib/prisma.js';
 
 import authRoutes from './routes/auth.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 // const PORT = process.env.PORT ?? 4000;
@@ -13,6 +14,7 @@ const app = express();
 // middleware
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json()); // parse JSON request body
+app.use(cookieParser()); // parse cookies
 
 // test routes
 app.get('/api/health', (_req, res) => {

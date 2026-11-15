@@ -4,14 +4,19 @@ import cors from 'cors';
 import { env } from './config/env.js';
 import { prisma } from './lib/prisma.js';
 
+import authRoutes from './routes/auth.routes.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import cookieParser from 'cookie-parser';
+
 const app = express();
 // const PORT = process.env.PORT ?? 4000;
 
 // middleware
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json()); // parse JSON request body
+app.use(cookieParser()); // parse cookies
 
-// routes
+// test routes
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
 });
@@ -23,6 +28,12 @@ app.get('/api/health/db', async (_req, res) => {
     users,
   });
 });
+
+// auth routes
+app.use('/api/auth', authRoutes);
+
+// error handler middleware (should be the last middleware)
+app.use(errorHandler);
 
 // start server
 app.listen(env.PORT, () => {

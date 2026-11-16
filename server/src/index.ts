@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import transactionRoutes from './routes/transaction.routes.js';
+import statsRoutes from './routes/stats.routes.js';
 
 const app = express();
 // const PORT = process.env.PORT ?? 4000;
@@ -38,6 +39,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 // transaction routes
 app.use('/api/transactions', transactionRoutes);
+// stats routes
+app.use('/api/stats', statsRoutes);
 
 // error handler middleware (should be the last middleware)
 app.use(errorHandler);

@@ -17,9 +17,9 @@ export const updateCategorySchema = createCategorySchema
   });
 
 // URL ထဲက :id
-export const idParamSchema = z.object({
-  id: z.coerce.number().int().positive(),
-});
+// export const idParamSchema = z.object({
+//   id: z.coerce.number().int().positive(),
+// });
 
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;

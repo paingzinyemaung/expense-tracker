@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 
 import authRoutes from './routes/auth.routes.js';
 import categoryRoutes from './routes/category.routes.js';
+import transactionRoutes from './routes/transaction.routes.js';
 
 const app = express();
 // const PORT = process.env.PORT ?? 4000;
@@ -35,6 +36,8 @@ app.get('/api/health/db', async (_req, res) => {
 app.use('/api/auth', authRoutes);
 // category routes
 app.use('/api/categories', categoryRoutes);
+// transaction routes
+app.use('/api/transactions', transactionRoutes);
 
 // error handler middleware (should be the last middleware)
 app.use(errorHandler);

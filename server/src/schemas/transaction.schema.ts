@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
-const typeSchema = z.enum(['INCOME', 'EXPENSE']);
-
+export const typeSchema = z.enum(['INCOME', 'EXPENSE']); // "const" ရှေ့မှာ export ထည့်
 export const createTransactionSchema = z.object({
   amount: z
     .number()

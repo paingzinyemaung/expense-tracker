@@ -4,9 +4,11 @@ import cors from 'cors';
 import { env } from './config/env.js';
 import { prisma } from './lib/prisma.js';
 
-import authRoutes from './routes/auth.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import cookieParser from 'cookie-parser';
+
+import authRoutes from './routes/auth.routes.js';
+import categoryRoutes from './routes/category.routes.js';
 
 const app = express();
 // const PORT = process.env.PORT ?? 4000;
@@ -31,6 +33,8 @@ app.get('/api/health/db', async (_req, res) => {
 
 // auth routes
 app.use('/api/auth', authRoutes);
+// category routes
+app.use('/api/categories', categoryRoutes);
 
 // error handler middleware (should be the last middleware)
 app.use(errorHandler);

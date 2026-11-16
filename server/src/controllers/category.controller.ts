@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import * as categoryService from '../services/category.service.js';
-import { idParamSchema } from '../schemas/category.schema.js';
+import { idParamSchema } from '../schemas/common.schema.js';
 import { getUserId } from '../middleware/auth.js';
 
 export async function listHandler(req: Request, res: Response) {

@@ -25,6 +25,7 @@ export function signAccessToken(userId: number) {
   });
 }
 
+// ---------- Access token verification ----------
 export function verifyAccessToken(token: string): number {
   const payload = jwt.verify(token, env.JWT_ACCESS_SECRET);
   if (typeof payload === 'string' || !payload.sub) {

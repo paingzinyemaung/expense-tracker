@@ -5,6 +5,8 @@ import DesignPreview from './pages/DesignPreview';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import AppLayout from './layouts/AppLayout';
+import ComingSoonPage from './pages/ComingSoonPage';
 
 export default function App() {
   return (
@@ -15,7 +17,17 @@ export default function App() {
       </Route>
 
       <Route element={<ProtectedRoute />}>
-        <Route path="/" element={<HomePage />} />
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/transactions"
+            element={<ComingSoonPage title="မှတ်တမ်းများ" />}
+          />
+          <Route
+            path="/categories"
+            element={<ComingSoonPage title="အမျိုးအစားများ" />}
+          />
+        </Route>
       </Route>
 
       <Route path="/design" element={<DesignPreview />} />

@@ -1,46 +1,40 @@
 @import 'tailwindcss';
-@plugin "daisyui";
 
+/* built-in light/dark theme များကို ပိတ်၊ ကိုယ့် theme နှစ်ခုပဲသုံး */
+@plugin "daisyui" {
+  themes: false;
+}
+
+/* ===== Light ===== */
 @plugin "daisyui/theme" {
   name: 'ledger';
   default: true;
   prefersdark: false;
   color-scheme: light;
 
-  /* မျက်နှာပြင်များ */
-  --color-base-100: oklch(98.5% 0.004 95);
-  --color-base-200: oklch(96% 0.006 95);
-  --color-base-300: oklch(91% 0.008 95);
+  --color-base-100: oklch(99% 0.003 95);
+  --color-base-200: oklch(96.5% 0.006 95);
+  --color-base-300: oklch(92% 0.008 95);
   --color-base-content: oklch(27% 0.02 250);
 
-  /* အဓိကအရောင် (teal) */
   --color-primary: oklch(52% 0.09 185);
   --color-primary-content: oklch(98% 0.01 185);
-
   --color-secondary: oklch(58% 0.06 250);
   --color-secondary-content: oklch(98% 0.005 250);
-
   --color-accent: oklch(76% 0.11 75);
   --color-accent-content: oklch(25% 0.05 75);
-
   --color-neutral: oklch(32% 0.02 250);
   --color-neutral-content: oklch(96% 0.005 250);
 
   --color-info: oklch(66% 0.09 235);
   --color-info-content: oklch(18% 0.04 235);
-
-  /* Income */
   --color-success: oklch(62% 0.11 155);
   --color-success-content: oklch(18% 0.05 155);
-
   --color-warning: oklch(80% 0.12 85);
   --color-warning-content: oklch(25% 0.06 85);
-
-  /* Expense */
   --color-error: oklch(60% 0.14 22);
   --color-error-content: oklch(98% 0.01 22);
 
-  /* ထောင့်ဝိုင်းမှု၊ အရွယ်အစား */
   --radius-selector: 1rem;
   --radius-field: 0.75rem;
   --radius-box: 1rem;
@@ -51,6 +45,56 @@
   --noise: 0;
 }
 
+/* ===== Dark ===== */
+@plugin "daisyui/theme" {
+  name: 'ledger-dark';
+  prefersdark: true;
+  color-scheme: dark;
+
+  --color-base-100: oklch(22% 0.014 250);
+  --color-base-200: oklch(18.5% 0.014 250);
+  --color-base-300: oklch(27% 0.014 250);
+  --color-base-content: oklch(93% 0.008 250);
+
+  --color-primary: oklch(72% 0.1 185);
+  --color-primary-content: oklch(20% 0.04 185);
+  --color-secondary: oklch(72% 0.06 250);
+  --color-secondary-content: oklch(20% 0.03 250);
+  --color-accent: oklch(80% 0.11 75);
+  --color-accent-content: oklch(25% 0.05 75);
+  --color-neutral: oklch(30% 0.015 250);
+  --color-neutral-content: oklch(94% 0.005 250);
+
+  --color-info: oklch(74% 0.09 235);
+  --color-info-content: oklch(20% 0.04 235);
+  --color-success: oklch(72% 0.12 155);
+  --color-success-content: oklch(20% 0.05 155);
+  --color-warning: oklch(82% 0.12 85);
+  --color-warning-content: oklch(25% 0.06 85);
+  --color-error: oklch(70% 0.14 22);
+  --color-error-content: oklch(20% 0.05 22);
+
+  --radius-selector: 1rem;
+  --radius-field: 0.75rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* ဖောင့်: Inter ကို အရင်ကြည့်၊ မြန်မာစာအတွက် Noto Sans Myanmar သို့ ကျ */
+@theme {
+  --font-sans:
+    'Inter Variable', 'Noto Sans Myanmar', ui-sans-serif, system-ui, sans-serif;
+}
+
 html {
-  -webkit-tap-highlight-color: transparent; /* ဖုန်းမှာ နှိပ်ရင် ပေါ်တဲ့ မီးခိုးရောင်ဘောင်ကို ဖျောက် */
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  line-height: 1.7; /* မြန်မာစာ အမှတ်အသားတွေ မဖြတ်ကပ်အောင် */
+  -webkit-font-smoothing: antialiased;
 }

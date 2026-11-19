@@ -1,5 +1,17 @@
-import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
-import { getTransactionsPage, type TransactionQuery } from './transactionsApi';
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+  type QueryClient,
+} from '@tanstack/react-query';
+import {
+  createTransaction,
+  deleteTransaction,
+  getTransactionsPage,
+  updateTransaction,
+  type TransactionQuery,
+} from './transactionsApi';
 
 export const transactionKeys = {
   all: ['transactions'] as const,
@@ -14,5 +26,36 @@ export function useTransactions(query: TransactionQuery) {
     getNextPageParam: (last) =>
       last.page < last.totalPages ? last.page + 1 : undefined,
     placeholderData: keepPreviousData,
+  });
+}
+
+// မှတ်တမ်းပြောင်းရင် စာရင်းနဲ့ အနှစ်ချုပ် (Dashboard အပါအဝင်) cache အားလုံး အသစ်ဖြစ်ရမယ်
+const invalidateAfterChange = (qc: QueryClient) =>
+  Promise.all([
+    qc.invalidateQueries({ queryKey: transactionKeys.all }),
+    qc.invalidateQueries({ queryKey: ['stats'] }),
+  ]);
+
+export function useCreateTransaction() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: createTransaction,
+    onSuccess: () => invalidateAfterChange(qc),
+  });
+}
+
+export function useUpdateTransaction() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: updateTransaction,
+    onSuccess: () => invalidateAfterChange(qc),
+  });
+}
+
+export function useDeleteTransaction() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: deleteTransaction,
+    onSuccess: () => invalidateAfterChange(qc),
   });
 }

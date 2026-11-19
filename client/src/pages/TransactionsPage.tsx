@@ -1,15 +1,27 @@
-import { useMemo } from 'react';
-import { Receipt } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Plus, Receipt } from 'lucide-react';
+import Modal from '../components/Modal';
 import { useCategories } from '../features/categories/hooks';
 import { useSummary } from '../features/stats/hooks';
 import { groupByDay } from '../features/transactions/group';
-import { useTransactions } from '../features/transactions/hooks';
+import {
+  useCreateTransaction,
+  useDeleteTransaction,
+  useTransactions,
+  useUpdateTransaction,
+} from '../features/transactions/hooks';
 import MonthPicker from '../features/transactions/MonthPicker';
+import TransactionForm from '../features/transactions/TransactionForm';
 import TransactionRow from '../features/transactions/TransactionRow';
+import type {
+  Transaction,
+  TransactionInput,
+} from '../features/transactions/types';
 import {
   useTransactionFilters,
   type TypeFilter,
 } from '../features/transactions/useTransactionFilters';
+import { getErrorMessage } from '../lib/errors';
 import { formatAmount, formatDayLabel } from '../lib/format';
 
 const TYPE_TABS: { value: TypeFilter; label: string }[] = [
@@ -17,6 +29,8 @@ const TYPE_TABS: { value: TypeFilter; label: string }[] = [
   { value: 'EXPENSE', label: 'ထွက်ငွေ' },
   { value: 'INCOME', label: 'ဝင်ငွေ' },
 ];
+
+type Editing = Transaction | 'new' | null; // null = ပိတ်၊ "new" = အသစ်၊ Transaction = ပြင်
 
 function Stat({
   label,
@@ -52,19 +66,68 @@ export default function TransactionsPage() {
     refetch,
   } = useTransactions(filters.query);
 
+  const create = useCreateTransaction();
+  const update = useUpdateTransaction();
+  const remove = useDeleteTransaction();
+
+  const [editing, setEditing] = useState<Editing>(null);
+  const [deleting, setDeleting] = useState<Transaction | null>(null);
+
+  const editingTransaction =
+    editing !== null && editing !== 'new' ? editing : undefined;
   const groups = useMemo(
     () => groupByDay(data?.pages.flatMap((p) => p.items) ?? []),
     [data],
   );
   const total = data?.pages[0]?.total ?? 0;
 
+  async function handleSave(input: TransactionInput) {
+    if (editing === 'new') await create.mutateAsync(input);
+    else if (editing) await update.mutateAsync({ id: editing.id, input });
+
+    // ရွေးထားတဲ့ရက်က ကြည့်နေတဲ့လ မဟုတ်ရင် အဲ့ဒီလကို ကူးပြ
+    const saved = new Date(input.date);
+    const target = { year: saved.getFullYear(), month: saved.getMonth() };
+    if (
+      target.year !== filters.yearMonth.year ||
+      target.month !== filters.yearMonth.month
+    ) {
+      filters.setMonth(target);
+    }
+    setEditing(null);
+  }
+
+  function askDelete(transaction: Transaction) {
+    remove.reset();
+    setEditing(null); // ပြင်တဲ့ sheet ကိုပိတ်ပြီး အတည်ပြု sheet ကိုဖွင့်
+    setDeleting(transaction);
+  }
+
+  async function confirmDelete() {
+    if (!deleting) return;
+    try {
+      await remove.mutateAsync(deleting.id);
+      setDeleting(null);
+    } catch {
+      // error ကို modal ထဲမှာ remove.error နဲ့ ပြထားပြီး
+    }
+  }
+
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-semibold">မှတ်တမ်းများ</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl font-semibold">မှတ်တမ်းများ</h1>
+        <button
+          className="btn btn-primary hidden min-h-11 lg:inline-flex"
+          onClick={() => setEditing('new')}
+        >
+          <Plus className="size-5" aria-hidden />
+          မှတ်တမ်းထည့်မည်
+        </button>
+      </div>
 
       <MonthPicker value={filters.yearMonth} onChange={filters.setMonth} />
 
-      {/* ဒီလရဲ့ အနှစ်ချုပ် */}
       {summary.data ? (
         <section className="grid grid-cols-3 divide-x divide-base-300 rounded-box border border-base-300 bg-base-100 py-3 text-center">
           <Stat
@@ -80,10 +143,9 @@ export default function TransactionsPage() {
           <Stat label="လက်ကျန်" value={summary.data.balance} />
         </section>
       ) : (
-        <div className="skeleton h-[4.5rem] w-full rounded-box" />
+        <div className="skeleton h-18 w-full rounded-box" />
       )}
 
-      {/* Filter များ */}
       <div className="space-y-3">
         <div role="tablist" className="tabs tabs-box w-full">
           {TYPE_TABS.map((tab) => (
@@ -118,7 +180,6 @@ export default function TransactionsPage() {
         </select>
       </div>
 
-      {/* စာရင်း */}
       {isPending && (
         <div className="space-y-2">
           {[0, 1, 2, 3, 4].map((i) => (
@@ -143,6 +204,12 @@ export default function TransactionsPage() {
           <p className="mt-1 text-sm opacity-70">
             ဒီလ (သို့) ဒီစစ်ထုတ်ချက်အတွက် မှတ်တမ်း မတွေ့ပါ။
           </p>
+          <button
+            className="btn btn-primary mt-4 min-h-11"
+            onClick={() => setEditing('new')}
+          >
+            မှတ်တမ်းထည့်မည်
+          </button>
         </div>
       )}
 
@@ -159,7 +226,7 @@ export default function TransactionsPage() {
               </h2>
               <ul className="divide-y divide-base-300 overflow-hidden rounded-box border border-base-300 bg-base-100">
                 {g.items.map((t) => (
-                  <TransactionRow key={t.id} t={t} />
+                  <TransactionRow key={t.id} t={t} onClick={setEditing} />
                 ))}
               </ul>
             </section>
@@ -179,6 +246,71 @@ export default function TransactionsPage() {
           )}
         </div>
       )}
+
+      {/* ဖုန်းအတွက် FAB */}
+      <button
+        className="btn btn-primary btn-circle fixed right-4 bottom-28 z-20 size-14 shadow-lg lg:hidden"
+        onClick={() => setEditing('new')}
+        aria-label="မှတ်တမ်းအသစ် ထည့်မည်"
+      >
+        <Plus className="size-6" aria-hidden />
+      </button>
+
+      {/* ထည့်/ပြင် sheet */}
+      <Modal
+        open={editing !== null}
+        onClose={() => setEditing(null)}
+        title={editing === 'new' ? 'မှတ်တမ်းအသစ်' : 'မှတ်တမ်း ပြင်ဆင်မည်'}
+      >
+        <TransactionForm
+          transaction={editingTransaction}
+          onSubmit={handleSave}
+          onCancel={() => setEditing(null)}
+          onDelete={
+            editingTransaction ? () => askDelete(editingTransaction) : undefined
+          }
+        />
+      </Modal>
+
+      {/* ဖျက်ရန် အတည်ပြုချက် */}
+      <Modal
+        open={deleting !== null}
+        onClose={() => setDeleting(null)}
+        title="ဖျက်မလား?"
+      >
+        <p className="text-sm">
+          {deleting &&
+            `${deleting.note || deleting.category?.name || 'ဒီမှတ်တမ်း'} (${formatAmount(deleting.amount)} Ks)`}{' '}
+          ကို ဖျက်မှာ သေချာလား? ပြန်ယူလို့ မရပါဘူး။
+        </p>
+        {remove.isError && (
+          <div
+            role="alert"
+            className="alert alert-error alert-soft mt-3 text-sm"
+          >
+            {getErrorMessage(remove.error)}
+          </div>
+        )}
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <button
+            className="btn min-h-11"
+            onClick={() => setDeleting(null)}
+            disabled={remove.isPending}
+          >
+            မဖျက်တော့ပါ
+          </button>
+          <button
+            className="btn btn-error min-h-11"
+            onClick={confirmDelete}
+            disabled={remove.isPending}
+          >
+            {remove.isPending && (
+              <span className="loading loading-spinner loading-sm" />
+            )}
+            ဖျက်မည်
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

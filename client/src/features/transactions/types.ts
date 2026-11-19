@@ -17,3 +17,12 @@ export type TransactionPage = {
   total: number;
   totalPages: number;
 };
+
+// Server ဆီ ပို့မယ့် ပုံစံ
+export type TransactionInput = {
+  type: TransactionType;
+  amount: number;
+  date: string; // ISO (UTC)
+  note: string | null;
+  categoryId: number | null;
+};

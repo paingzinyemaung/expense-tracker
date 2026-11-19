@@ -1,6 +1,10 @@
 import { api } from '../../lib/api';
-import type { TransactionPage, TransactionType } from './types';
-
+import type {
+  Transaction,
+  TransactionInput,
+  TransactionPage,
+  TransactionType,
+} from './types';
 export type TransactionQuery = {
   from: string;
   to: string;
@@ -16,4 +20,30 @@ export async function getTransactionsPage(
     params: { ...query, page, limit: 20 },
   });
   return res.data;
+}
+
+export async function createTransaction(input: TransactionInput) {
+  const res = await api.post<{ transaction: Transaction }>(
+    '/transactions',
+    input,
+  );
+  return res.data.transaction;
+}
+
+export async function updateTransaction({
+  id,
+  input,
+}: {
+  id: number;
+  input: TransactionInput;
+}) {
+  const res = await api.patch<{ transaction: Transaction }>(
+    `/transactions/${id}`,
+    input,
+  );
+  return res.data.transaction;
+}
+
+export async function deleteTransaction(id: number) {
+  await api.delete(`/transactions/${id}`);
 }

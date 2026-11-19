@@ -75,3 +75,9 @@ export function monthRange({ year, month }: YearMonth) {
     to: new Date(year, month + 1, 1).toISOString(),
   };
 }
+
+// ISO (သို့) Date → <input type="datetime-local"> အတွက် "YYYY-MM-DDTHH:mm" (ကိုယ့်ဒေသအချိန်)
+export function toDateTimeLocal(value: string | Date = new Date()) {
+  const d = typeof value === 'string' ? new Date(value) : value;
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}

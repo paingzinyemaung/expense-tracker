@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage';
 import AppLayout from './layouts/AppLayout';
 import ComingSoonPage from './pages/ComingSoonPage';
 import CategoriesPage from './pages/CategoriesPage';
+import TransactionsPage from './pages/TransactionsPage';
 
 export default function App() {
   return (
@@ -20,10 +21,7 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
-          <Route
-            path="/transactions"
-            element={<ComingSoonPage title="မှတ်တမ်းများ" />}
-          />
+          <Route path="/transactions" element={<TransactionsPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
         </Route>
       </Route>

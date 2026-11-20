@@ -2,6 +2,7 @@ import {
   keepPreviousData,
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
   type QueryClient,
 } from '@tanstack/react-query';
@@ -26,6 +27,15 @@ export function useTransactions(query: TransactionQuery) {
     getNextPageParam: (last) =>
       last.page < last.totalPages ? last.page + 1 : undefined,
     placeholderData: keepPreviousData,
+  });
+}
+
+// ရက်စွဲ filter မပါ၊ နောက်ဆုံး limit ခု (Dashboard အတွက်)
+export function useRecentTransactions(limit = 5) {
+  return useQuery({
+    queryKey: [...transactionKeys.all, 'recent', limit],
+    queryFn: () => getTransactionsPage({}, 1, limit),
+    select: (page) => page.items,
   });
 }
 

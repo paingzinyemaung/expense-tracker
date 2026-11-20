@@ -6,8 +6,8 @@ import type {
   TransactionType,
 } from './types';
 export type TransactionQuery = {
-  from: string;
-  to: string;
+  from?: string;
+  to?: string;
   type?: TransactionType;
   categoryId?: number;
 };
@@ -15,9 +15,10 @@ export type TransactionQuery = {
 export async function getTransactionsPage(
   query: TransactionQuery,
   page: number,
+  limit = 20,
 ) {
   const res = await api.get<TransactionPage>('/transactions', {
-    params: { ...query, page, limit: 20 },
+    params: { ...query, page, limit },
   });
   return res.data;
 }

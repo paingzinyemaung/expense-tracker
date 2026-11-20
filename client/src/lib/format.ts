@@ -81,3 +81,14 @@ export function toDateTimeLocal(value: string | Date = new Date()) {
   const d = typeof value === 'string' ? new Date(value) : value;
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
+
+export const currentYearMonth = (): YearMonth => {
+  const now = new Date();
+  return { year: now.getFullYear(), month: now.getMonth() };
+};
+
+// "2026-11-19T05:00:00Z" → "19 နိုဝင်ဘာ"
+export function formatShortDate(iso: string) {
+  const d = new Date(iso);
+  return `${d.getDate()} ${MONTHS_MY[d.getMonth()]}`;
+}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Plus, Receipt } from 'lucide-react';
 import Modal from '../components/Modal';
 import { useCategories } from '../features/categories/hooks';
@@ -23,6 +23,7 @@ import {
 } from '../features/transactions/useTransactionFilters';
 import { getErrorMessage } from '../lib/errors';
 import { formatAmount, formatDayLabel } from '../lib/format';
+import { useSearchParams } from 'react-router';
 
 const TYPE_TABS: { value: TypeFilter; label: string }[] = [
   { value: 'ALL', label: 'အားလုံး' },
@@ -72,6 +73,20 @@ export default function TransactionsPage() {
 
   const [editing, setEditing] = useState<Editing>(null);
   const [deleting, setDeleting] = useState<Transaction | null>(null);
+  // ပင်မစာမျက်နှာက "/transactions?add=1" နဲ့ လာရင် form ကိုဖွင့်၊ param ကိုဖျက် (F5 နှိပ်ရင် ထပ်မပွင့်စေ)
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get('add') !== '1') return;
+    setEditing('new');
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete('add');
+        return next;
+      },
+      { replace: true },
+    );
+  }, [searchParams, setSearchParams]);
 
   const editingTransaction =
     editing !== null && editing !== 'new' ? editing : undefined;

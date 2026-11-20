@@ -1,10 +1,20 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { getSummary } from './statsApi';
+import { getExpenseByCategory, getSummary } from './statsApi';
 
-export function useSummary(range: { from: string; to: string }) {
+type Range = { from: string; to: string };
+
+export function useSummary(range: Range) {
   return useQuery({
     queryKey: ['stats', 'summary', range],
     queryFn: () => getSummary(range),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useExpenseByCategory(range: Range) {
+  return useQuery({
+    queryKey: ['stats', 'by-category', 'EXPENSE', range],
+    queryFn: () => getExpenseByCategory(range),
     placeholderData: keepPreviousData,
   });
 }

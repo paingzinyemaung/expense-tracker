@@ -13,3 +13,21 @@ export async function getSummary(range: { from: string; to: string }) {
   });
   return res.data.summary;
 }
+
+export type CategoryTotal = {
+  categoryId: number | null;
+  name: string;
+  color: string;
+  total: number;
+  count: number;
+};
+
+export async function getExpenseByCategory(range: {
+  from: string;
+  to: string;
+}) {
+  const res = await api.get<{ items: CategoryTotal[] }>('/stats/by-category', {
+    params: { ...range, type: 'EXPENSE' },
+  });
+  return res.data.items;
+}

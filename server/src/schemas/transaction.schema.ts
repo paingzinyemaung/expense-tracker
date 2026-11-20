@@ -8,7 +8,10 @@ export const createTransactionSchema = z.object({
     .positive('Amount must be greater than 0')
     .max(2_000_000_000, 'Amount is too large'),
   type: typeSchema,
-  date: z.coerce.date(),
+  date: z.coerce.date().refine(
+    (d) => d.getTime() <= Date.now() + 60_000, // ၁ မိနစ် ခွင့်လွှတ် (စက်နာရီ အနည်းငယ်ကွာနိုင်လို့)
+    'Date cannot be in the future',
+  ),
   note: z.string().trim().max(200).nullable().optional(),
   categoryId: z.number().int().positive().nullable().optional(),
 });

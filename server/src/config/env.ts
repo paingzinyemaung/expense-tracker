@@ -10,6 +10,7 @@ const schema = z.object({
   JWT_ACCESS_SECRET: z.string().min(32),
   ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().default(900), // 15 minutes
   REFRESH_TOKEN_TTL_DAYS: z.coerce.number().default(7), // 7 days
+  CLIENT_ORIGIN: z.string().default('http://localhost:5173'),
 });
 
 export const env = schema.parse(process.env);

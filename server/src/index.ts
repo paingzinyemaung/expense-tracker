@@ -33,6 +33,11 @@ app.use('/api/stats', statsRoutes);
 
 app.use(errorHandler);
 
-app.listen(env.PORT, () => {
-  console.log(`Server listening on port ${env.PORT}`);
-});
+// ကိုယ့်စက်မှာပဲ port ဖွင့်၊ Vercel (serverless) မှာ app ကို export လုပ်ရုံ
+if (!process.env.VERCEL) {
+  app.listen(env.PORT, () => {
+    console.log(`Server listening on port ${env.PORT}`);
+  });
+}
+
+export default app;

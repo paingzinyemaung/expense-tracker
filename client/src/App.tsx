@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AppLayout from './layouts/AppLayout';
-import ComingSoonPage from './pages/ComingSoonPage';
+// import ComingSoonPage from './pages/ComingSoonPage';
 import CategoriesPage from './pages/CategoriesPage';
 import TransactionsPage from './pages/TransactionsPage';
 

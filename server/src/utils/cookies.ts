@@ -7,7 +7,8 @@ const isProd = env.NODE_ENV === 'production';
 const baseOptions: CookieOptions = {
   httpOnly: true, // JS က ဖတ်မရ
   secure: isProd, // production မှာ HTTPS ပေါ်မှာပဲ ပို့
-  sameSite: isProd ? 'none' : 'lax', // frontend/backend domain ခွဲတဲ့ deploy အတွက် (နောက်မှရှင်းမယ်)
+  // sameSite: isProd ? 'none' : 'lax', // frontend/backend domain ခွဲတဲ့ deploy အတွက် (နောက်မှရှင်းမယ်)
+  sameSite: 'lax',
   path: '/api/auth', // /api/auth/* ကိုပဲ cookie ပို့ (တခြား API မှာ မပါ)
 };
 

@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "build": "prisma generate",
     "typecheck": "tsc --noEmit",
     "postinstall": "prisma generate",
     "seed:demo": "tsx src/scripts/seedDemo.ts"

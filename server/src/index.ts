@@ -12,8 +12,19 @@ import transactionRoutes from './routes/transaction.routes.js';
 const app = express();
 
 // app.use(helmet());
+// app.use(
+//   helmet({
+//     crossOriginResourcePolicy: { policy: 'cross-origin' },
+//   }),
+// );
+
+const helmetMiddleware =
+  typeof helmet === 'function'
+    ? helmet
+    : (helmet as unknown as { default: typeof helmet }).default;
+
 app.use(
-  helmet({
+  helmetMiddleware({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   }),
 );

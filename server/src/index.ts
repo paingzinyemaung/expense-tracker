@@ -1,7 +1,7 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
-import helmet from 'helmet';
+// import helmet from 'helmet';
 import { env } from './config/env.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './routes/auth.routes.js';
@@ -11,13 +11,26 @@ import transactionRoutes from './routes/transaction.routes.js';
 
 const app = express();
 
+app.disable('x-powered-by'); // "Express သုံးထားတယ်" ဆိုတဲ့ header ကိုဖျောက်
+
+// API (JSON) အတွက် အဓိကလုံခြုံရေး header များ
+app.use((_req, res, next) => {
+  res.set({
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'no-referrer',
+    'Strict-Transport-Security': 'max-age=15552000; includeSubDomains',
+  });
+  next();
+});
+
 // app.use(helmet());
 
-app.use(
-  helmet({
-    crossOriginResourcePolicy: { policy: 'cross-origin' },
-  }),
-);
+// app.use(
+//   helmet({
+//     crossOriginResourcePolicy: { policy: 'cross-origin' },
+//   }),
+// );
 
 app.use(cors({ origin: env.CLIENT_ORIGIN, credentials: true }));
 app.use(express.json());

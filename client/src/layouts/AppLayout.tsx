@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { NavLink, Outlet } from 'react-router';
 import { useAuth } from '../features/auth/useAuth';
+import OfflineBanner from '../components/OfflineBanner';
 
 const navItems = [
   { to: '/', label: 'ပင်မ', icon: LayoutDashboard, end: true },
@@ -83,6 +84,8 @@ export default function AppLayout() {
             <LogOut className="size-5" aria-hidden />
           </button>
         </header>
+
+        <OfflineBanner />
 
         <main className="mx-auto w-full max-w-3xl flex-1 px-4 pt-4 pb-28 lg:px-8 lg:pt-8 lg:pb-10">
           <Outlet />

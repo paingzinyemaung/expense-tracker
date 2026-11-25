@@ -13,6 +13,7 @@ import {
   formatMonthLabel,
   monthRange,
 } from '../lib/format';
+import InstallBanner from '../features/pwa/InstallBanner';
 
 const MAX_SLICES = 5;
 const OTHERS_COLOR = '#9ca3af';
@@ -81,6 +82,7 @@ export default function HomePage() {
           မှတ်တမ်းထည့်မည်
         </Link>
       </div>
+      <InstallBanner />
 
       {/* ဒီလ အနှစ်ချုပ် */}
       {summary.isPending && (

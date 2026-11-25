@@ -93,7 +93,7 @@ export default function AppLayout() {
       </div>
 
       {/* ===== ဖုန်း: အောက်ခြေ dock (lg မှာဖျောက်) ===== */}
-      <nav className="dock lg:hidden" aria-label="အဓိက မီနူး">
+      <nav className="dock dock-lg lg:hidden" aria-label="အဓိက မီနူး">
         {navItems.map(({ to, label, icon: Icon, end }) => (
           <NavLink
             key={to}
@@ -103,7 +103,7 @@ export default function AppLayout() {
               isActive ? 'dock-active text-primary' : ''
             }
           >
-            <Icon className="size-5" aria-hidden />
+            <Icon className="size-6" aria-hidden />
             <span className="dock-label">{label}</span>
           </NavLink>
         ))}
